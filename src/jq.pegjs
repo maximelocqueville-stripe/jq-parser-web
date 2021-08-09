@@ -88,7 +88,9 @@
       "sort": input => {return unpack(input).sort()}
     }
     const function1_map = {
-      "map": arg => input => input.map(i => arg(i)),
+      "map": arg => input => {
+          return input.map(i => arg(i)).filter(((o) => o !== '__pegjs__stream__undefined__'));
+      },
       "select": arg => input => {
           if (arg(input)) return input;
           return "__pegjs__stream__undefined__";
@@ -254,10 +256,10 @@ bracket_transforms
             const handle_array = function(array) {
                 if (array.length == 0) return []
                 if (array.length == 1) return array[0]
-                return new Stream(array)
+                return new Stream(array);
             }
             if (input instanceof Array) {
-                return handle_array(input)
+                return handle_array(input);
             } else {
                 if (typeof input === 'object') return handle_array(Object.values(input))
             }
