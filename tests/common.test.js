@@ -1,4 +1,4 @@
-import { expect } from '@jest/globals';
+import { expect, it } from '@jest/globals';
 import parser from '../src/index';
 
 describe('Single quote String literal', () => {
@@ -72,4 +72,15 @@ describe('Error messages', () => {
       expect(() => parser(query)(input)).toThrow(error);
     })
   )
+
+  const q = ".data | select(.type == \"expresss\")";
+  const e = 'Cannot index array with';
+  const p = {
+    "data": [
+      {"type":"express","b":"b"}, {"a":"a","b":"b"}
+    ]
+  };
+  it(`Error '${e}' for '${q}'`, () => {
+    expect(() => parser(q)(p)).toThrow(e);
+  })
 })

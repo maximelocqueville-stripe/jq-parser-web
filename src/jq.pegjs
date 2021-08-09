@@ -5,7 +5,7 @@
         if (input instanceof Stream) {
             return input.map(func)
         }
-        return func(input)
+        return func(input);
     }
     const construct_pair_simple = (key, value) => input => {
         let obj = {};
@@ -50,12 +50,16 @@
       }
       map(f) {
         const items = this.items.map(f);
-        if (items.find(((o) => o !== '__pegjs__stream__undefined__'))) {
+        
+        if (items.find(((o) => o === '__pegjs__stream__undefined__'))) {
             const items_filtered = items.filter(((o) => o !== '__pegjs__stream__undefined__'));
-            if (items_filtered.length == 1) return items_filtered[0];
+
+            if (items_filtered.length === 0) return [];
+            if (items_filtered.length === 1) return items_filtered[0];
+
             return new Stream(items_filtered);
         }
-        return new Stream(this.items.map(f))
+        return new Stream(items);
       }
       product(other) {
         return new Stream(product(this.items, unpack(other)))
@@ -85,7 +89,7 @@
     }
     const function1_map = {
       "map": arg => input => input.map(i => arg(i)),
-      "select": arg => input => { 
+      "select": arg => input => {
           if (arg(input)) return input;
           return "__pegjs__stream__undefined__";
       },
@@ -270,7 +274,12 @@ identity
     = "." {return identity}
 
 object_identifier_index
-    = "." name:name {return mapf(x => x[name])}
+    = "." name:name {
+        return mapf(x => {
+            if (Array.isArray(x)) throw new Error(`Cannot index array with string "${name}"`);
+            return x[name];
+        })
+    }
 
 double_quote_string_core
     = double_quote_string_char* {return text()}
