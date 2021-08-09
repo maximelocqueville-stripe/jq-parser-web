@@ -12,7 +12,7 @@ const getCacheKey = function getCacheKey(fileData, filePath, configString, optio
 };
 
 const process = function process(sourceText, sourcePath, config, options) {
-  return 'module.exports = ' + _pegjs2.default.generate(sourceText, { output: 'source' });
+  return 'module.exports = ' + _pegjs2.default.generate(sourceText, { output: 'source'});
 };
 
 const transformer = {

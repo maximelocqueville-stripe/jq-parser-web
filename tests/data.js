@@ -470,6 +470,7 @@ export default {
   ],
   "tests_jq_web": [
     ["select", [".[]", ".[] | select(.a == \"a\")"], [[{a: "a", b: "b"}, {a: "b", b: "b"}], [{a: "a", b: "b"}, {a: "a", b: "b"}, {a: "b", b: "b"}]]],
+    ["map select", ["map(select(.a == \"a\"))"], [[{"a":"a","b":"b"}, {"a":"a","b":"b"}]]],
     ["tonumber", ["tonumber"], [1, -1, "1", "-1", "1.23", "-1"]],
     [
       "Array Construction",

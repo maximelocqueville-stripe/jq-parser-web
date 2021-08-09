@@ -7,18 +7,6 @@
         }
         return func(input)
     }
-    const filterf = func => function(input) {
-        if (input instanceof Stream) {
-            const f = unpack(input).filter(func);
-            if (f.length == 0) return []
-            if (f.length == 1) return f[0]
-            return new Stream(f)
-        }
-        const f = func(input);
-        if (f.length == 0) return []
-        if (f.length == 1) return f[0]
-        return new Stream(f)
-    }
     const construct_pair_simple = (key, value) => input => {
         let obj = {};
         obj[key] = value(input);
@@ -53,7 +41,7 @@
     }
     const unpack = a => (a instanceof Stream) ? (unpack(a.unpack())) : a
     class Stream {
-    // Simulates multiple "lines" of output
+      // Simulates multiple "lines" of output
       constructor(items) {
         this.items = items;
       }
@@ -61,10 +49,13 @@
         return this.items
       }
       map(f) {
+        const items = this.items.map(f);
+        if (items.find(((o) => o !== '__pegjs__stream__undefined__'))) {
+            const items_filtered = items.filter(((o) => o !== '__pegjs__stream__undefined__'));
+            if (items_filtered.length == 1) return items_filtered[0];
+            return new Stream(items_filtered);
+        }
         return new Stream(this.items.map(f))
-      }
-      filter(f) {
-        return new Stream(this.items.filter(f))
       }
       product(other) {
         return new Stream(product(this.items, unpack(other)))
@@ -94,7 +85,10 @@
     }
     const function1_map = {
       "map": arg => input => input.map(i => arg(i)),
-      "select": arg => input => {console.log(input); input.filter((i) => arg(i))},
+      "select": arg => input => { 
+          if (arg(input)) return input;
+          return "__pegjs__stream__undefined__";
+      },
       "map_values": arg => input => {
         const pairs = Object.keys(input).map(key => ({[key]: arg(input[key])}))
         return Object.assign({}, ...pairs)
@@ -166,7 +160,6 @@ _
 pipeline
     = "(" _ pipeline:value _ ")" {return pipeline}
     / "-" _ "(" _ pipeline:value _ ")" {return input => 0 - pipeline(input)}
-    / left:filter _ "|" _ "select" _ "(" _ right:value _ ")" _ { return input => filterf(right)(left(input)) }
     / left:filter _ "|" _ right:pipeline { return input => mapf(right)(left(input)) }
     / filter
 

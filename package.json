@@ -1,6 +1,6 @@
 {
   "name": "jq-parser-web",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "main": "dist/jq-parser-web.cjs.js",
   "module": "dist/jq-parser-web.esm.js",
