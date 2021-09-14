@@ -56,6 +56,22 @@ describe('Other tests', () => {
 
     expect(parser(query)(input)).toEqual(output);
   })
+
+  it('handle double digits array', () => {
+    const query = '.panels[12].name'
+    const input = {panels: 
+        [
+          null, null, null, null, null, null, null, null, null, null,
+          {"name": "Mary", "age": 22},
+          {"name": "Rupert", "age": 29},
+          {"name": "Jane", "age": 11},
+          {"name": "John", "age": 42}
+      ]
+    }
+    const output = "Jane";
+
+    expect(parser(query)(input)).toEqual(output);
+  })
 })
 
 

@@ -299,4 +299,4 @@ name
     = name:([a-zA-Z_$][0-9a-zA-Z_$]*) {return text()}
 
 index
-    = index:[0-9]+ {return index}
+    = index:[0-9]+ {return parseInt(text())}
